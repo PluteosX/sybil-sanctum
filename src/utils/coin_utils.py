@@ -31,12 +31,13 @@ def get_week_market_data_coins(coins):
         new_coins.append(dict(
             id=coin.get("id"),
             name=coin.get("name"),
+            last_added=coin.get("last_added"),
             creation_date=coin.get("creation_date").strftime('%Y-%m-%d'),
             chain=coin.get("chain"),
             initial_price=initial_price,
             current_price=coin.get("price"),
             # Percentage relative to the opening price
-            current_price_percentage=((initial_price - coin.get("price")) / initial_price) * 100,
+            current_price_percentage=((coin.get("price") - initial_price) / initial_price) * 100,
             higher_price=coin_market_data_info.get("ath"),
             # Percentage relative to the opening price
             higher_price_percentage=((coin_market_data_info.get("ath") - initial_price) / initial_price) * 100,
