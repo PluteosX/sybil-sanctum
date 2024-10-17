@@ -58,7 +58,7 @@ def get_new_cryptocurrencies_list():
     return new_coins
 
 
-def get_coin_info(id_coin, retries=10, wait_time=30):
+def get_coin_info(id_coin, retries=20, wait_time=30):
     url = f'https://api.coingecko.com/api/v3/coins/{id_coin}'
 
     try:
@@ -85,7 +85,6 @@ def get_coin_info(id_coin, retries=10, wait_time=30):
 
 
 def get_coins_market_data_info(id_coins, retries=10, wait_time=30):
-    # TODO: contemplar el error 429.
     params = {
         'vs_currency': 'usd',
         'ids': id_coins,
@@ -114,6 +113,3 @@ def get_coins_market_data_info(id_coins, retries=10, wait_time=30):
     except requests.exceptions.RequestException as e:
         print(f"Connection error for getting market data info for the following coins: {id_coins}: {e}")
         return None
-
-
-

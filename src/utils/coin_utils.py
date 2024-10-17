@@ -17,38 +17,41 @@ def get_today_added_coins(coins):
 def get_week_market_data_coins(coins):
     week_coins = list(filter(_get_week_cryptocurrencies, coins))
     week_id_coins = ','.join(list(map(lambda coin: coin['id'], week_coins)))
+    print(week_id_coins)
 
     coins_market_data_info = get_coins_market_data_info(week_id_coins)
 
     new_coins = []
 
     for coin in week_coins:
-        coin_market_data_info = next((c for c in coins_market_data_info
-                                      if c['id'] == coin.get('id')), None)
+        try:
+            coin_market_data_info = next((c for c in coins_market_data_info
+                                          if c['id'] == coin.get('id')), None)
 
-        initial_price = coin_market_data_info.get("sparkline_in_7d").get("price")[0]
+            initial_price = coin_market_data_info.get("sparkline_in_7d").get("price")[0]
 
-        new_coins.append(dict(
-            id=coin.get("id"),
-            name=coin.get("name"),
-            last_added=coin.get("last_added"),
-            creation_date=coin.get("creation_date").strftime('%Y-%m-%d'),
-            chain=coin.get("chain"),
-            initial_price=initial_price,
-            current_price=coin.get("price"),
-            # Percentage relative to the opening price
-            current_price_percentage=((coin.get("price") - initial_price) / initial_price) * 100,
-            higher_price=coin_market_data_info.get("ath"),
-            # Percentage relative to the opening price
-            higher_price_percentage=((coin_market_data_info.get("ath") - initial_price) / initial_price) * 100,
-            higher_price_date=coin_market_data_info.get("ath_date"),
-            lower_price=coin_market_data_info.get("atl"),
-            # Percentage relative to the opening price
-            lower_price_percentage=((initial_price - coin_market_data_info.get("atl")) / initial_price) * 100,
-            lower_price_date=coin_market_data_info.get("atl_date"),
-            price_change_percentage_24h=coin_market_data_info.get("price_change_percentage_24h_in_currency")
-        ))
-
+            new_coins.append(dict(
+                id=coin.get("id"),
+                name=coin.get("name"),
+                last_added=coin.get("last_added"),
+                creation_date=coin.get("creation_date").strftime('%Y-%m-%d'),
+                chain=coin.get("chain"),
+                initial_price=initial_price,
+                current_price=coin.get("price"),
+                # Percentage relative to the opening price
+                current_price_percentage=((coin.get("price") - initial_price) / initial_price) * 100,
+                higher_price=coin_market_data_info.get("ath"),
+                # Percentage relative to the opening price
+                higher_price_percentage=((coin_market_data_info.get("ath") - initial_price) / initial_price) * 100,
+                higher_price_date=coin_market_data_info.get("ath_date"),
+                lower_price=coin_market_data_info.get("atl"),
+                # Percentage relative to the opening price
+                lower_price_percentage=((initial_price - coin_market_data_info.get("atl")) / initial_price) * 100,
+                lower_price_date=coin_market_data_info.get("atl_date"),
+                price_change_percentage_24h=coin_market_data_info.get("price_change_percentage_24h_in_currency")
+            ))
+        except:
+            print(f'WARN: coin {coin.get("id")} can\'t be included due to lack of data in the required parameters.')
 
     return new_coins
 

@@ -1,17 +1,14 @@
 import sys
 import os
-
-from src.utils.analytics_utils import get_chain_info
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
-
-from datetime import datetime
-
 import numpy as np
 import pandas as pd
 
+from src.utils.analytics_utils import get_chain_info, get_top_10_coin_info
+from datetime import datetime
 from utils.coingecko_utils import get_new_cryptocurrencies_list
 from utils.coin_utils import get_week_market_data_coins, get_today_added_coins
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
 
 def main():
@@ -51,7 +48,10 @@ def main():
     rank_lower_hours = df_result['lower_hour'].value_counts()
 
     df_chain_info = get_chain_info(df_result)
-    print(df_chain_info)
+
+    df_top_10_coins = get_top_10_coin_info(df_result)
+
+    print(df_top_10_coins)
 
 if __name__ == "__main__":
     main()
