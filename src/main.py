@@ -1,5 +1,8 @@
 import sys
 import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import numpy as np
 import pandas as pd
 
@@ -7,8 +10,6 @@ from src.utils.analytics_utils import get_chain_info, get_top_10_coin_info
 from datetime import datetime
 from utils.coingecko_utils import get_new_cryptocurrencies_list
 from utils.coin_utils import get_week_market_data_coins, get_today_added_coins
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
 
 def main():
