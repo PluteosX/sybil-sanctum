@@ -17,13 +17,13 @@ def get_new_cryptocurrencies_list():
 
     response = requests.get(url, headers=headers)
 
+    new_coins = []
+
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
 
         coin_table = soup.find_all('tr',
                                    class_='hover:tw-bg-gray-50 tw-bg-white dark:tw-bg-moon-900 hover:dark:tw-bg-moon-800 tw-text-sm')
-
-        new_coins = []
 
         for coin_item in coin_table:
             # data-analytics-event-properties
