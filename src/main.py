@@ -14,7 +14,7 @@ from utils.coin_utils import get_week_market_data_coins, get_today_added_coins
 
 def main():
     new_cryptocurrencies_list = get_new_cryptocurrencies_list()
-    # today_coins = get_today_added_coins(new_cryptocurrencies_list)
+    today_coins = get_today_added_coins(new_cryptocurrencies_list)
     week_market_data_coins = get_week_market_data_coins(new_cryptocurrencies_list)
 
     pd.set_option('display.max_colwidth', None)
