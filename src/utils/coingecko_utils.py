@@ -1,59 +1,67 @@
 import json
 from datetime import datetime, timedelta
+from urllib.error import HTTPError, URLError
 
 import requests
 import time
 from bs4 import BeautifulSoup
 import re
+from urllib.request import Request, urlopen
 
 from src.constants import DAY
 
 
 def get_new_cryptocurrencies_list():
     url = 'https://www.coingecko.com/es/new-cryptocurrencies?items=300'
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
-    }
 
-    response = requests.get(url, headers=headers)
+    req = Request(
+        url=url,
+        headers={'User-Agent': 'Mozilla/5.0'}
+    )
+
+    try:
+        webpage = urlopen(req).read()
+
+    except HTTPError as e:
+        print(f"HTTP error occurred: {e.code} - {e.reason}")
+        return []  # Devuelve una lista vacía o maneja el error según sea necesario
+
+    except URLError as e:
+        print(f"URL error occurred: {e.reason}")
+        return []
 
     new_coins = []
 
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, 'html.parser')
+    soup = BeautifulSoup(webpage, 'html.parser')
 
-        coin_table = soup.find_all('tr',
-                                   class_='hover:tw-bg-gray-50 tw-bg-white dark:tw-bg-moon-900 hover:dark:tw-bg-moon-800 tw-text-sm')
+    coin_table = soup.find_all('tr',
+                               class_='hover:tw-bg-gray-50 tw-bg-white dark:tw-bg-moon-900 hover:dark:tw-bg-moon-800 tw-text-sm')
 
-        for coin_item in coin_table:
-            # data-analytics-event-properties
-            # id_coin = coin_item.find('a', class_='tw-flex tw-items-center tw-w-full').get('href').split('/')[-1]
-            id_coin = json.loads(coin_item.find('i', class_='far fa-star tw-cursor-pointer tw-py-2')\
-                .get('data-analytics-event-properties')).get('coin_name')
+    for coin_item in coin_table:
+        # data-analytics-event-properties
+        id_coin = json.loads(coin_item.find('i', class_='far fa-star tw-cursor-pointer tw-py-2') \
+                             .get('data-analytics-event-properties')).get('coin_name')
 
-            name_coin = \
-                re.sub(r'\s+', ' ', coin_item.find('a', class_='tw-flex tw-items-center tw-w-full').text.strip()).strip()
+        name_coin = \
+            re.sub(r'\s+', ' ', coin_item.find('a', class_='tw-flex tw-items-center tw-w-full').text.strip()).strip()
 
-            td_coin = coin_item.find_all('td',
-                                           class_='tw-text-end tw-px-1 tw-py-2.5 2lg:tw-p-2.5 tw-bg-inherit tw-text-gray-900 dark:tw-text-moon-50')
+        td_coin = coin_item.find_all('td',
+                                     class_='tw-text-end tw-px-1 tw-py-2.5 2lg:tw-p-2.5 tw-bg-inherit tw-text-gray-900 dark:tw-text-moon-50')
 
-            price_coin = td_coin[0].get('data-sort')
-            chain_coin = td_coin[1].get('data-sort')
+        price_coin = td_coin[0].get('data-sort')
+        chain_coin = td_coin[1].get('data-sort')
 
-            last_added = coin_item.find('td',
-                                        class_='tw-text-end tw-box-content tw-h-[56px] tw-px-1 tw-py-2.5 2lg:tw-p-2.5 tw-bg-inherit tw-text-gray-900 dark:tw-text-moon-50').text.strip()
+        last_added = coin_item.find('td',
+                                    class_='tw-text-end tw-box-content tw-h-[56px] tw-px-1 tw-py-2.5 2lg:tw-p-2.5 tw-bg-inherit tw-text-gray-900 dark:tw-text-moon-50').text.strip()
 
-            if len(last_added.split(DAY)) > 1:
-                day = int(last_added.split(DAY)[0].strip())
-                new_coins.append({'id': id_coin, 'name': name_coin,
-                                  'price': float(price_coin), 'chain': chain_coin, 'last_added': last_added,
-                                  'creation_date': datetime.today()-timedelta(days=day)})
-            else:
-                new_coins.append({'id': id_coin, 'name': name_coin,
-                                  'price': float(price_coin),'chain':chain_coin,'last_added': last_added})
-
-    else:
-        print(f"Error in the request: {response.status_code}")
+        if len(last_added.split(DAY)) > 1:
+            day = int(last_added.split(DAY)[0].strip())
+            new_coins.append({'id': id_coin, 'name': name_coin,
+                              'price': float(price_coin), 'chain': chain_coin, 'last_added': last_added,
+                              'creation_date': datetime.today() - timedelta(days=day)})
+        else:
+            new_coins.append({'id': id_coin, 'name': name_coin,
+                              'price': float(price_coin), 'chain': chain_coin, 'last_added': last_added})
 
     return new_coins
 
