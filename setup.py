@@ -4,8 +4,8 @@ with open('requirements.txt') as f:
     required = f.read().splitlines()
 
 setup(
-    name='PluteosX',
-    version='1.0.1',
+    name='PluteosX-sybil-sanctum',
+    version='1.1.0',
     packages=find_packages(),
     install_requires=required,
 )

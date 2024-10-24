@@ -14,3 +14,4 @@ class Cryptocurrency:
     homepage: str
     blockchain_sites: List[str]
     additional_notices: List[str]
+    last_added: str

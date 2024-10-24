@@ -24,7 +24,7 @@ def get_new_cryptocurrencies_list():
 
     except HTTPError as e:
         print(f"HTTP error occurred: {e.code} - {e.reason}")
-        return []  # Devuelve una lista vacía o maneja el error según sea necesario
+        return []
 
     except URLError as e:
         print(f"URL error occurred: {e.reason}")
@@ -38,7 +38,6 @@ def get_new_cryptocurrencies_list():
                                class_='hover:tw-bg-gray-50 tw-bg-white dark:tw-bg-moon-900 hover:dark:tw-bg-moon-800 tw-text-sm')
 
     for coin_item in coin_table:
-        # data-analytics-event-properties
         id_coin = json.loads(coin_item.find('i', class_='far fa-star tw-cursor-pointer tw-py-2') \
                              .get('data-analytics-event-properties')).get('coin_name')
 
