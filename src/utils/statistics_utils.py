@@ -23,4 +23,4 @@ def calculate_top_3_highest(series):
 
 
 def calculate_percentage(df, col_value, col_total):
-    return (df[col_value] / df[col_total]) * 100
+    return np.round((df[col_value] / df[col_total]) * 100, 2)
