@@ -1,4 +1,4 @@
-name: Python CI
+name: Generate Chains Info
 
 on:
   workflow_dispatch:
@@ -21,9 +21,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run the Python script
+      - name: Generate Chain Info
         run: |
-          python src/main.py
+          python src/main.py --generate chains_info
         env:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          TELEGRAM_TOKEN: ${{secrets.TELEGRAM_TOKEN}}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
