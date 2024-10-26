@@ -92,7 +92,8 @@ def get_top_10_coin_info(df):
         .apply(lambda x: calendar.day_name[datetime.strptime(x, DATETIME_FORMAT).weekday()])
 
     df_coin_top_10 = df_10[['id', 'chain', 'higher_price_percentage', 'higher_price_date_relation',
-                            'higher_hour', 'higher_day_week']]
+                            'higher_hour', 'higher_day_week', 'lower_price_percentage', 'lower_price_date_relation',
+                            'lower_hour']]
 
     ids = df_coin_top_10['id'].tolist()
 
@@ -108,7 +109,8 @@ def get_top_10_coin_info(df):
     df_merged['description_en'] = df_merged['description'].apply(lambda x: x['en'])
 
     return df_merged[['id', 'name', 'chain', 'description_en', 'homepage_url', 'is_meme', 'higher_price_percentage',
-                      'higher_price_date_relation', 'higher_hour', 'higher_day_week']]
+                      'higher_price_date_relation', 'higher_hour', 'higher_day_week', 'lower_price_percentage',
+                      'lower_price_date_relation', 'lower_hour']]
 
 
 def _is_not_yesterday_cryptocurrency(row):

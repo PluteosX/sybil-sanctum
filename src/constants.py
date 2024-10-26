@@ -13,6 +13,10 @@ D_LATER = 'd later'
 DATE_FORMAT = '%Y-%m-%d'
 DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 
-CHAIN_INFO_TXT = 'chain_info.txt'
-TOP_10_COIN_INFO_TXT = 'top_10_coin_info.txt'
+CHAINS_INFO = 'chains_info'
+TOP_10_WEEK_COINS = 'top_10_week_coins'
+TODAY_COINS = 'today_coins'
+
+CHAINS_INFO_TXT = 'chains_info.txt'
+TOP_10_WEEK_COINS_TXT = 'top_10_week_coins.txt'
 TODAY_COINS_TXT = 'today_coins.txt'
