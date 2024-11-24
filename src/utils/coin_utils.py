@@ -1,19 +1,25 @@
 import numpy as np
 
-from src.constants import HOUR, HOURS, DAY, DATE_FORMAT
+from src.constants import HOUR, HOURS, DAY, DATE_FORMAT, MINUTE, MINUTES, TODAY_COINS, LAST_HOUR_COINS
 from src.models.cryptocurrency import Cryptocurrency
 from src.utils.coingecko_utils import get_coin_info, get_coins_market_data_info
 
 
-def get_today_added_coins(coins):
-    today_coins = list(filter(_get_today_cryptocurrencies, coins))
-    today_added_coins = []
+def get_added_coins(coins, type):
+    if type == TODAY_COINS:
+        filtered_coins = list(filter(_get_today_cryptocurrencies, coins))
+    elif type == LAST_HOUR_COINS:
+        filtered_coins = list(filter(_get_last_hour_cryptocurrencies, coins))
+    else:
+        filtered_coins = []
 
-    for coin in today_coins:
+    added_coins = []
+
+    for coin in filtered_coins:
         coin_info = get_coin_info(coin.get('id'))
-        today_added_coins.append(_cast_to_cryptocurrency(coin, coin_info))
+        added_coins.append(_cast_to_cryptocurrency(coin, coin_info))
 
-    return today_added_coins
+    return added_coins
 
 
 def get_week_market_data_coins(coins):
@@ -58,12 +64,18 @@ def get_week_market_data_coins(coins):
 
 
 def _get_today_cryptocurrencies(coin):
-    return HOUR in coin['last_added'] or HOURS in coin['last_added']
+    return HOUR in coin['last_added'] or HOURS in coin['last_added'] or \
+        MINUTE in coin['last_added'] or MINUTES in coin['last_added']
 
 
 def _get_week_cryptocurrencies(coin):
     last_added_array_by_day = coin['last_added'].split(DAY)
     return len(last_added_array_by_day) > 1 and int(last_added_array_by_day[0].strip()) < 8
+
+
+def _get_last_hour_cryptocurrencies(coin):
+    #return MINUTE in coin['last_added'] or MINUTES in coin['last_added']
+    return "alrededor de 6 horas" in coin['last_added']
 
 
 def _cast_to_cryptocurrency(coin, coin_info):
