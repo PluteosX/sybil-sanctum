@@ -8,6 +8,7 @@ class Cryptocurrency:
     name: str
     price: float
     platform: str
+    contract: str
     categories: List[str]
     description: str
     categories: List[str]

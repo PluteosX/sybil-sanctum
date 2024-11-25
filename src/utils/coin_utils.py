@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.constants import HOUR, HOURS, DAY, DATE_FORMAT, MINUTE, MINUTES, TODAY_COINS, LAST_HOUR_COINS
+from src.constants import HOUR, HOURS, DAY, DATE_FORMAT, MINUTE, MINUTES, TODAY_COINS, LAST_HALF_HOUR_COINS
 from src.models.cryptocurrency import Cryptocurrency
 from src.utils.coingecko_utils import get_coin_info, get_coins_market_data_info
 
@@ -8,7 +8,7 @@ from src.utils.coingecko_utils import get_coin_info, get_coins_market_data_info
 def get_added_coins(coins, type):
     if type == TODAY_COINS:
         filtered_coins = list(filter(_get_today_cryptocurrencies, coins))
-    elif type == LAST_HOUR_COINS:
+    elif type == LAST_HALF_HOUR_COINS:
         filtered_coins = list(filter(_get_last_hour_cryptocurrencies, coins))
     else:
         filtered_coins = []
@@ -49,11 +49,13 @@ def get_week_market_data_coins(coins):
                 current_price_percentage=np.round(((coin.get("price") - initial_price) / initial_price) * 100),
                 higher_price=coin_market_data_info.get("ath"),
                 # Percentage relative to the opening price
-                higher_price_percentage=np.round(((coin_market_data_info.get("ath") - initial_price) / initial_price) * 100),
+                higher_price_percentage=np.round(
+                    ((coin_market_data_info.get("ath") - initial_price) / initial_price) * 100),
                 higher_price_date=coin_market_data_info.get("ath_date"),
                 lower_price=coin_market_data_info.get("atl"),
                 # Percentage relative to the opening price
-                lower_price_percentage=np.round(((initial_price - coin_market_data_info.get("atl")) / initial_price) * 100),
+                lower_price_percentage=np.round(
+                    ((initial_price - coin_market_data_info.get("atl")) / initial_price) * 100),
                 lower_price_date=coin_market_data_info.get("atl_date"),
                 price_change_percentage_24h=coin_market_data_info.get("price_change_percentage_24h_in_currency")
             ))
@@ -70,19 +72,25 @@ def _get_today_cryptocurrencies(coin):
 
 def _get_week_cryptocurrencies(coin):
     last_added_array_by_day = coin['last_added'].split(DAY)
-    return len(last_added_array_by_day) > 1 and int(last_added_array_by_day[0].strip()) < 8
+    return len(last_added_array_by_day) > 0 and int(last_added_array_by_day[0].strip()) < 8
 
 
 def _get_last_hour_cryptocurrencies(coin):
-    #return MINUTE in coin['last_added'] or MINUTES in coin['last_added']
-    return "alrededor de 6 horas" in coin['last_added']
+    last_added_array_by_half_hour = coin['last_added'].split(MINUTE)
+    return len(last_added_array_by_half_hour) > 0 and int(last_added_array_by_half_hour[0].strip()) < 31
 
 
 def _cast_to_cryptocurrency(coin, coin_info):
+    asset_platform_id = coin_info.get('asset_platform_id')
+    contract = None if coin_info.get("detail_platforms") \
+        .get(asset_platform_id) is None else coin_info.get("detail_platforms")\
+        .get(asset_platform_id).get("contract_address")
+
     return Cryptocurrency(id=coin.get('id'),
                           name=coin.get('name'),
                           price=coin.get('price'),
-                          platform=coin_info.get('asset_platform_id'),
+                          platform=asset_platform_id,
+                          contract=contract,
                           categories=coin_info.get('categories'),
                           description=coin_info.get('description').get("en"),
                           homepage=coin_info.get('links').get('homepage')[0],
