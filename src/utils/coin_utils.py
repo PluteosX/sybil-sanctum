@@ -9,7 +9,7 @@ def get_added_coins(coins, type):
     if type == TODAY_COINS:
         filtered_coins = list(filter(_get_today_cryptocurrencies, coins))
     elif type == LAST_HALF_HOUR_COINS:
-        filtered_coins = list(filter(_get_last_hour_cryptocurrencies, coins))
+        filtered_coins = list(filter(_get_last_half_hour_cryptocurrencies, coins))
     else:
         filtered_coins = []
 
@@ -72,12 +72,12 @@ def _get_today_cryptocurrencies(coin):
 
 def _get_week_cryptocurrencies(coin):
     last_added_array_by_day = coin['last_added'].split(DAY)
-    return len(last_added_array_by_day) > 0 and int(last_added_array_by_day[0].strip()) < 8
+    return len(last_added_array_by_day) > 1 and int(last_added_array_by_day[0].strip()) < 8
 
 
-def _get_last_hour_cryptocurrencies(coin):
+def _get_last_half_hour_cryptocurrencies(coin):
     last_added_array_by_half_hour = coin['last_added'].split(MINUTE)
-    return len(last_added_array_by_half_hour) > 0 and int(last_added_array_by_half_hour[0].strip()) < 31
+    return len(last_added_array_by_half_hour) > 1 and int(last_added_array_by_half_hour[0].strip()) < 31
 
 
 def _cast_to_cryptocurrency(coin, coin_info):
