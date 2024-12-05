@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='PluteosX-sybil-sanctum',
-    version='1.2.1',
+    version='1.3.0',
     packages=find_packages(),
     install_requires=required,
 )
